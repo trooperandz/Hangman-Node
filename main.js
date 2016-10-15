@@ -9,12 +9,9 @@ const Word = require('./word.js');
 
 const Letter = require('./letter.js');
 
-// Establish master array of answer choices
-var masterAnswerArray = ["Tesla", "Einstein", "Farraday", "Korolev", "Turing"];
-
-// Instantiate class instances, and set the initial word
-var game = new Game(masterAnswerArray);
-var word = new Word(game.pickRandomWord(), masterAnswerArray);
+// Instantiate class instances
+var game = new Game();
+var word = new Word(game.pickRandomWord());
 
 // Main gameplay object
 var main = {
@@ -53,7 +50,7 @@ var main = {
 			"*********************************" +
 			"\nWin Count: " + this.winCount + " Loss Count: " + this.lostCount +
 			"\nGuesses Remaining: " + this.guessesRemaining +
-			"\nWords Remaining: " + masterAnswerArray.length +
+			"\nWords Remaining: " + game.masterAnswerArray.length +
 			"\nLetters guessed: " + this.userGuesses.join(" ") + 
 			"\nYour current word to guess: " + word.displayWordState()
 		);
@@ -88,11 +85,12 @@ var main = {
 				// Check to see if the word has been guessed all the way or not
 				if(word.roundFinished()) {
 					// User guessed the word. Now remove it from the master array
-					word.removeWord();
+					game.removeWord();
 	
 					// If the master word array is empty, the game is over. Otherwise, initialize another round
-					if(word.gameFinished()) {
-						console.log("The game is over!");
+					if(game.gameFinished()) {
+						// The game is over. Show win status and instruct the user to restart the program again if he/she wishes to play again
+						console.log(this.getGameFeedback() + "If you would like to play again, please restart the program!");
 					} else {
 						// Increment win count
 						main.winCount += 1;
@@ -108,10 +106,11 @@ var main = {
 	
 			} else {
 				// User wasn't able to guess the word correclty. Remove the word from the master array
-				word.removeWord();
+				game.removeWord();
 				// There are no more guesses left.  Ask player if he/she wants to play again, if the master word array is not empty
-				if(word.gameFinished()) {
-					console.log("The game is over!");
+				if(game.gameFinished()) {
+					// The game is over. Show win status and instruct the user to restart the program again if he/she wishes to play again
+					console.log(this.getGameFeedback() + "If you would like to play again, please restart the program!");
 				} else {
 					// Increment losses
 					main.lostCount += 1;
@@ -132,8 +131,8 @@ var main = {
 		this.userGuesses = [];
 	
 		// Instantiate new objects
-		game = new Game(masterAnswerArray);
-		word = new Word(game.pickRandomWord(), masterAnswerArray);
+		//game = new Game();
+		word = new Word(game.pickRandomWord());
 	},
 
 	// Ask user to play another round, and process accordingly
@@ -157,9 +156,22 @@ var main = {
 				main.playGame();
 			} else {
 				// User chose not to start another round.  Show goodbye msg
-				console.log("Thanks for playing; better luck next time!");
+				console.log("Thanks for playing; ya'll come back now, ya here?");
 			}
 		});
+	},
+
+	// Get the final game result message, based on win and loss counts
+	getGameFeedback: function() {
+		var msg = "";
+		if(this.winCount > this.lostCount) {
+			msg += "Congratulations, you won! ";
+		} else if (this.winCount < this.lostCount) {
+			msg += "Sorry, but you lost! ";
+		} else {
+			msg += "It was a tied game! ";
+		}
+		return msg;
 	}
 } // end var main
 

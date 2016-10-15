@@ -1,9 +1,11 @@
-/*
- * Note: The word file should do the following: (check out: https://www.sitepoint.com/object-oriented-javascript-deep-dive-es6-classes/)
- *	-receive the chosen word as a param
- *	-compare the letters guessed to the letters in the word selected
- * Note: Reference for const, let, var: https://medium.com/javascript-scene/javascript-es6-var-let-or-const-ba58b8dcde75#.onfm49mcm
+/**
+ * File: word.js
+ * Created: 10/15/16
+ * Purpose: Receive the current word in gameplay, display it to the user, and check to see if the round is finished
+ * @author: Matt Holland
  */
+
+// Enable ECMA6 methods
 "use strict";
 
 const Letter = require('./letter.js');
@@ -15,17 +17,14 @@ class Word {
 	 * @param {string} word The word randomly chosen by the computer
 	 * @return N/A
 	 */ 
-	constructor (word, array) {
+	constructor (word) {
 		this.word = word;
 		//console.log("typeof this.word: " + typeof this.word);
 
 		// Turn the word into an array (split) of letters, and run them through the Letter module
-		this.letters = this.word
-			.split("")
+		this.letters = word
+			.split('')
 			.map(v => new Letter(v));
-
-		// Establish the master word array
-		this.masterAnswerArray = array;
 	}
 
 	/**
@@ -34,21 +33,13 @@ class Word {
 	 * and join(" ") will display each item as a string, separated by the passed delimitter (in this case, a blank)
 	 * @param N/A
 	 * @return {string} word The current word in gameplay, including blanks and letters
-	 * Note: this.letters =
-	 * [ 
-     *   Letter { letter: 'K', visible: false },
-     *   Letter { letter: 'o', visible: true  },
-     *   Letter { letter: 'r', visible: false },
-     *   Letter { letter: 'o', visible: false },
-     *   Letter { letter: 'l', visible: true  },
-     *   Letter { letter: 'e', visible: false },
-     *   Letter { letter: 'v', visible: true  } 
-     * ]
 	 */
 	displayWordState() {
 		var word = this.letters
-			.map(v => v.show()).join("");
-		//console.log("this.letters in displayWordState: " , this.letters);
+			// Collect results into a new array
+			.map(v => v.show())
+			// Call join to return a string
+			.join("");
 		return word;
 	}
 
@@ -64,24 +55,18 @@ class Word {
 			} else {
 				return false;
 			}
-		//}).some(b => b);
-		//}).some(function(b) {
-			//console.log('b: ' + b);
-			//return b;
 		});
+		/* Alternative code to implement:
+		return this.letters
+			.map(a => {
+				var match = (guess === a.value);
+				a.visible = a.visible || match;
+				return match;
+			});*/
 	}
 
-	/**
-	 * Remove the word from the master word array if the round is complete (including both win and loss cases)
-	 * @param N/A
-	 * @return N/A
-	 */
-	removeWord() {
-		var index = this.masterAnswerArray.indexOf(this.word);
-		if(index != -1) {
-			this.masterAnswerArray.splice(index, 1);
-			//console.log('masterAnswerArray: ' + this.masterAnswerArray);
-		}	
+	revealWord() {
+		// Code here
 	}
 
 	/**
@@ -92,26 +77,7 @@ class Word {
 	roundFinished() {
 		return this.displayWordState() == this.word;
 	}
-
-	/**
-	 * Determine length of master array.  If 0, game is over
-	 * @param N/A
-	 * @return
-	 */
-	gameFinished() {
-		return (this.masterAnswerArray.length == 0) ? true : false;
-	}
 }
 
-// Test the code
-//var word = new Word("Tesla");
-//word.displayWordState();
-
-// Make the entire class available to other files
+// Make the module available to the main program
 module.exports = Word;
-
-
-/*
- 	var title = title || "Error";
-	basically checks if title evaluates to false. If it does, it "returns" "Error", otherwise it returns title.
-*/

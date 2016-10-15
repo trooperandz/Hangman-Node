@@ -12,14 +12,14 @@ class Letter {
 	constructor(letter) {
 		this.letter = letter;
 		this.visible = false;
-		//console.log('this.letter inside of class Letter: ' + this.letter);
+		// If the value/character is the space character, then make it automatically visible if it's a space
+		//this.visible = (value === ' ');
 	}
 
 	show() {
-		//console.log((this.visible) ? 'true' : 'false');
 		return(this.visible) ? this.letter : ' _ ';
 	}
 }
 
-// Make the entire class available to other files
+// Make the module available to the main program
 module.exports = Letter;
