@@ -18,9 +18,6 @@ var word = new Word(game.pickRandomWord(), masterAnswerArray);
 
 // Main gameplay object
 var main = {
-	// Establish the current word
-	currentWord: game,
-
 	// Establish total guesses possible
 	guessesRemaining: 10,
 	
@@ -73,19 +70,20 @@ var main = {
 				}
 		
 		]).then(function(answers) {
-			if(this.guessesRemaining > 0) {
+			// Note: could not use the this keyword in here without the code ceasing
+			if(main.guessesRemaining > 0) {
 				// If user's guess isn't yet inside of the userGuesses array, push it & decrement the guess count
-				if(this.userGuesses.indexOf(answers.guess) == -1) {
-					this.userGuesses.push(answers.guess);
+				if(main.userGuesses.indexOf(answers.guess) == -1) {
+					main.userGuesses.push(answers.guess);
 					// Decrement guesses remaining, if they haven't guessed the letter yet
-					this.guessesRemaining -= 1;
+					main.guessesRemaining -= 1;
 				}
-				
+
 				// Set letter property visible to true, if user guess is in the answer word string
 				word.playerGuess(answers.guess);
-	
+
 				// Show the status messages, including the current word display (with blanks)
-				this.printInfo();
+				main.printInfo();
 	
 				// Check to see if the word has been guessed all the way or not
 				if(word.roundFinished()) {
@@ -97,29 +95,29 @@ var main = {
 						console.log("The game is over!");
 					} else {
 						// Increment win count
-						this.winCount += 1;
+						main.winCount += 1;
 	
 						// Initialize inquirer prompt, and another round if user chooses to continue
-						this.playAnotherRound("You got it! Would you like to keep playing (y/n)?");
+						main.playAnotherRound("You got it! Would you like to keep playing (y/n)?");
 					}
 					return true;
 				}
 	
 				// Recursively ask the question again
-				this.playGame();
+				main.playGame();
 	
 			} else {
 				// User wasn't able to guess the word correclty. Remove the word from the master array
 				word.removeWord();
 				// There are no more guesses left.  Ask player if he/she wants to play again, if the master word array is not empty
 				if(word.gameFinished()) {
-						console.log("The game is over!");
+					console.log("The game is over!");
 				} else {
 					// Increment losses
-					this.lostCount += 1;
+					main.lostCount += 1;
 	
 					// Initialize inquirer prompt, and another round if user chooses to continue
-					this.playAnotherRound("Sorry, you missed that one! Would you like to keep playing (y/n)?");
+					main.playAnotherRound("Sorry, you missed that one! Would you like to keep playing (y/n)?");
 				}
 			}
 		});
@@ -148,15 +146,15 @@ var main = {
 				message: msg,
 				type: "input",
 				validate: function(input) {
-					return (this.validYesNo.test(input)) ? true : false;
+					return (main.validYesNo.test(input)) ? true : false;
 				}
 			}
 		]).then(function(answers) {
-			if(this.validYes.test(answers.answer)) {
+			if(main.validYes.test(answers.answer)) {
 				// Start another round, instantiate new game items
-				this.initializeRound();
-				this.printInfo();
-				this.playGame();
+				main.initializeRound();
+				main.printInfo();
+				main.playGame();
 			} else {
 				// User chose not to start another round.  Show goodbye msg
 				console.log("Thanks for playing; better luck next time!");
