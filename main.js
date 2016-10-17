@@ -50,7 +50,8 @@ var main = {
 			"*********************************" +
 			"\nWin Count: " + this.winCount + " Loss Count: " + this.lostCount +
 			"\nGuesses Remaining: " + this.guessesRemaining +
-			"\nWords Remaining: " + game.masterAnswerArray.length +
+			"\nWords Remaining: " + (game.masterAnswerArray.length - 1) +
+			"\n** Hint: " + game.currentHint +
 			"\nLetters guessed: " + this.userGuesses.join(" ") + 
 			"\nYour current word to guess: " + word.displayWordState()
 		);
@@ -90,13 +91,13 @@ var main = {
 					// If the master word array is empty, the game is over. Otherwise, initialize another round
 					if(game.gameFinished()) {
 						// The game is over. Show win status and instruct the user to restart the program again if he/she wishes to play again
-						console.log(this.getGameFeedback() + "If you would like to play again, please restart the program!");
+						console.log(main.getGameFeedback() + "If you would like to play again, please restart the program!");
 					} else {
 						// Increment win count
 						main.winCount += 1;
 	
 						// Initialize inquirer prompt, and another round if user chooses to continue
-						main.playAnotherRound("You got it! Would you like to keep playing (y/n)?");
+						main.playAnotherRound("You got it! The correct word was: " + word.revealWord() + ". Would you like to keep playing (y/n)?");
 					}
 					return true;
 				}
@@ -110,13 +111,13 @@ var main = {
 				// There are no more guesses left.  Ask player if he/she wants to play again, if the master word array is not empty
 				if(game.gameFinished()) {
 					// The game is over. Show win status and instruct the user to restart the program again if he/she wishes to play again
-					console.log(this.getGameFeedback() + "If you would like to play again, please restart the program!");
+					console.log(main.getGameFeedback() + "If you would like to play again, please restart the program!");
 				} else {
 					// Increment losses
 					main.lostCount += 1;
 	
 					// Initialize inquirer prompt, and another round if user chooses to continue
-					main.playAnotherRound("Sorry, you missed that one! Would you like to keep playing (y/n)?");
+					main.playAnotherRound("Sorry, you missed that one! The correct word was: " + word.revealWord() + ". Would you like to keep playing (y/n)?");
 				}
 			}
 		});
@@ -130,8 +131,7 @@ var main = {
 		// Clear out the guesses array
 		this.userGuesses = [];
 	
-		// Instantiate new objects
-		//game = new Game();
+		// Instantiate new word object
 		word = new Word(game.pickRandomWord());
 	},
 
@@ -164,12 +164,13 @@ var main = {
 	// Get the final game result message, based on win and loss counts
 	getGameFeedback: function() {
 		var msg = "";
+		var answer = "The correct word was: " + word.revealWord() + ". ";
 		if(this.winCount > this.lostCount) {
-			msg += "Congratulations, you won! ";
+			msg += "Congratulations, you won! " + answer;
 		} else if (this.winCount < this.lostCount) {
-			msg += "Sorry, but you lost! ";
+			msg += "Sorry, but you lost! " + answer;
 		} else {
-			msg += "It was a tied game! ";
+			msg += "It was a tied game! " + answer;
 		}
 		return msg;
 	}

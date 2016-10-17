@@ -17,12 +17,12 @@ class Word {
 	 * @param {string} word The word randomly chosen by the computer
 	 * @return N/A
 	 */ 
-	constructor (word) {
-		this.word = word;
+	constructor (dataObj) {
+		this.word = dataObj.currentWord;
 		//console.log("typeof this.word: " + typeof this.word);
 
 		// Turn the word into an array (split) of letters, and run them through the Letter module
-		this.letters = word
+		this.letters = this.word
 			.split('')
 			.map(v => new Letter(v));
 	}
@@ -49,7 +49,7 @@ class Word {
 	 */
 	playerGuess(guess) {
 		this.letters.map(function(a) {
-			if(guess == a.letter) {
+			if(guess.toUpperCase() == a.letter) {
 				a.visible = true;
 				return true;
 			} else {
@@ -65,8 +65,11 @@ class Word {
 			});*/
 	}
 
+	/**
+	 * Show the word answer to the player, after current round is completed
+	 */
 	revealWord() {
-		// Code here
+		return this.word;
 	}
 
 	/**

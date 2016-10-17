@@ -13,33 +13,66 @@ class Game {
 
 	// Create the masterAnswerArray
 	constructor() {
-		// Create currentWord var holder
+		// Create currentWord and currentHint vars
 		this.currentWord = "";
+		this.currentHint = "";
 
 		// State the main game array of word choices
-		this.masterAnswerArray = ["Tesla", "Einstein", "Farraday", "Korolev", "Turing"];
+		this.masterAnswerArray = [
+			{
+				name: "TESLA",
+				hint: "He is responsible for our entire AC electrical system."
+			},
+
+			{
+				name: "EINSTEIN",
+				hint: "He won the Nobel Prize for the photoelectric effect."
+			},
+
+			{
+				name: "FARADAY",
+				hint: "Established the basis for the concept of the electromagnetic field."
+			},
+
+			{
+				name: "KOROLEV",
+				hint: "The lead Soviet rocket engineer during the Space Race with the U.S."
+			},
+
+			{
+			 	name: "TURING",
+			 	hint: "The father of theoretical computer science and artificial intelligence."
+			}
+		];
 	}
 	
 	/**
 	 * Pick a random word from the masterAnswerArray
 	 * @param N/A
-	 * @return {string} A word to be used for main gameplay
+	 * @return {object} The current word and the current hint
 	 */
  	pickRandomWord() {
- 		this.currentWord = this.masterAnswerArray[Math.floor(Math.random() * this.masterAnswerArray.length + 1) - 1];
- 		return this.currentWord;
+ 		var index = Math.floor(Math.random() * this.masterAnswerArray.length);
+ 		this.currentWord = this.masterAnswerArray[index].name;
+ 		this.currentHint = this.masterAnswerArray[index].hint;
+ 		return { currentWord: this.currentWord, currentHint: this.currentHint };
 	}
 
 	/**
-	 * Remove the word from the master word array if the round is complete (including both win and loss cases)
+	 * Remove the word from the master answer array if the round is complete (including both win and loss cases)
 	 * @param N/A
 	 * @return N/A
 	 */
 	removeWord() {
-		var index = this.masterAnswerArray.indexOf(this.currentWord);
-		console.log("this.currentWord: " + this.currentWord + " index of word to remove: " + index);
+		var index;
+		// Note: had to establish w for scoping error
+		var w = this.currentWord;
+		this.masterAnswerArray.forEach(function(obj, i, arr) {
+			if(w == obj.name){
+				index = i;
+			}
+		});
 		this.masterAnswerArray.splice(index, 1);
-		console.log("this.masterAnswerArray: " + this.masterAnswerArray);
 	}
 
 	/**
